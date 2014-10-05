@@ -27,9 +27,71 @@ $(function() {
     window.print();});  
   $( "#tabs" )
     .tabs( {heightStyle: "auto"} );
-    
+  $( "#de, #en" ).click(function() {
+    lang = $(this).attr("id");
+    translateView();
+    });    
   });
 
+/*
+ * Translations, thanks to Sebastian Fuchs for describing the usage of
+ * data attributes as an translation tool.
+ * 
+ * http://foxable.net/2014/04/client-seitige-mehrsprachigkeit-mit-jquery/
+ * 
+ */
+
+
+var lang="en"; // current language
+
+// translation data
+var langData = {
+    de: {
+        PASSWORDCARD: "Passwort-Karte",
+	SHORT_DESCRIPTION: "Diese Anwendung erzeugt eine Karte für Passwörter.",
+	THE_CARD: "Die Karte",
+	SETTINGS: "Einstellungen",
+	SPECIAL_CHARS: "Sonderzeichen:",
+	CORNER_TEXT: "Eckentext:",
+	GENERATE_CARD: "Karte erzeugen",
+	PRINT_CARD: "Karte drucken"
+    },
+    en: {
+        PASSWORDCARD: "Passwordcard",
+	SHORT_DESCRIPTION: "This application generates a card for passwords.",
+	THE_CARD: "The card",
+	SETTINGS: "Settings",
+	SPECIAL_CHARS: "Special chars:",
+	CORNER_TEXT: "Corner text:",
+	GENERATE_CARD: "Generate card",
+	PRINT_CARD: "Print card"	
+    }
+};
+ 
+// returns the translation for the given
+// language key (depending on the current language)
+function translate(key) {
+    if (langData.hasOwnProperty(lang)) {
+        if (langData[lang].hasOwnProperty(key)) {
+            return langData[lang][key];
+        } else {
+            console.log("Unknown language key: " + key);
+            return "Undefined";
+        }
+    } else {
+        console.log("Unknown language: " + lang);
+        return "Undefined";
+    }
+};
+ 
+// translate all multi-lingual DOM elements
+function translateView() {
+    $(".totranslate").each(function() {
+        var key = $(this).attr("data-totranslate");
+ 
+        $(this).text(translate(key));
+    });
+};
 
 function initializeTheCard() {
   
@@ -65,6 +127,7 @@ function init() {
   
   theCard = document.getElementById("theCard");
   initializeSettings();
+  translateView();
   initializeTheCard();
   fillTheCard();
 }
