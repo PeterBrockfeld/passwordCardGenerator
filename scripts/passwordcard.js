@@ -1,4 +1,6 @@
 var theCard = "";
+var specialChars = "";
+var cornerText = "";
 
 window.onload = init;
 
@@ -9,7 +11,27 @@ function BoundaryException(value, desiredOperation) {
       return this.value + this.message
    };
 }
-function initializiseTheCard() {
+
+/*
+ * jQueryUI functions
+ */
+
+$(function() {
+  $( "#generateTable" )
+    .button()
+    .click(function() {
+    fillTheCard();});
+  $( "#printCard" )
+    .button()
+    .click(function() {
+    window.print();});  
+  $( "#tabs" )
+    .tabs( {heightStyle: "auto"} );
+    
+  });
+
+
+function initializeTheCard() {
   
   // create header:
   var singleRow = "";
@@ -17,7 +39,7 @@ function initializiseTheCard() {
   singleRow = document.createElement("tr");
   singleRow.innerHTML = 
   '<tr>' +
-  '<th class="singleCell"></th>' +
+  '<th class="singleCell" id="cornerTextOnCard"></th>' +
   '<th class="singleCell">ABC</th>' +
   '<th class="singleCell">DEF</th>' +
   '<th class="singleCell">GHI</th>' +
@@ -32,12 +54,18 @@ function initializiseTheCard() {
   theCard.appendChild(singleRow);
 }
 
+function initializeSettings() {
+  specialChars = document.getElementById("specialChars");
+  cornerText = document.getElementById("cornerText");
+  specialChars.value = "+-#.,!§$%&/()=?;:_'*";
+  cornerText.value = "TST";
+}
+
 function init() {
   
   theCard = document.getElementById("theCard");
-  var button = document.getElementById("generateTable");
-  button.onclick = fillTheCard;
-  initializiseTheCard();
+  initializeSettings();
+  initializeTheCard();
   fillTheCard();
 }
 
@@ -54,12 +82,16 @@ function fillTheCard() {
   var rowsOfTheCard = document.getElementsByTagName("tr");
   var countRows = rowsOfTheCard.length;
   
-  // leave the header untouched, so we start at "1", the second row.
+  // leave the header (nearly) untouched, so we start at "1", the second row.
   for (var i = 1; i < countRows; i++) {
     rowsOfTheCard[1].parentNode.removeChild(rowsOfTheCard[1]);
 
   }
  
+  // adjust the corner text:
+  var cornerCell = document.getElementById("cornerTextOnCard");
+  cornerCell.innerHTML = cornerText.value;
+  
   /* the first cell in each row is a prefix number, simply counted
    * from 1 to 9.
    */
@@ -258,8 +290,8 @@ function giveDigit() {
 }
 
 function giveSpecialChar() {
-  var specialChars = "+-#.,!§$%&/()=?;:_'*";
-  return specialChars.charAt(giveRandomPosition(20));
+  var specialCharsVal = specialChars.value;
+  return specialCharsVal.charAt(giveRandomPosition(specialCharsVal.length));
 }
 
 function deleteNthChar(inputString, position) {
