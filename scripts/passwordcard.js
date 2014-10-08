@@ -142,12 +142,11 @@ function fillTheCard() {
    */
   
   // get all the rows and count them:
-  var rowsOfTheCard = document.getElementsByTagName("tr");
+  var rowsOfTheCard = document.getElementsByClassName("generatedRow");
   var countRows = rowsOfTheCard.length;
   
-  // leave the header (nearly) untouched, so we start at "1", the second row.
-  for (var i = 1; i < countRows; i++) {
-    rowsOfTheCard[1].parentNode.removeChild(rowsOfTheCard[1]);
+  for (var i = 0; i < countRows; i++) {
+    rowsOfTheCard[0].parentNode.removeChild(rowsOfTheCard[1]);
 
   }
  
@@ -192,6 +191,8 @@ function createSingleRow(prefix) {
   for (var i = 0; i < 9; i++) {
     singleRow.appendChild(createSingleCell());
   }
+  
+  singleRow.setAttribute("class", "generatedRow");
   return singleRow;  
 }
 
@@ -294,6 +295,7 @@ function giveRandomPosition(upTo) {
   }
 
  var randomArray = new Uint8Array(1);
+ //TODO replace by Math.Random for older browsers
  window.crypto.getRandomValues(randomArray);
   
  return Math.floor((randomArray[0] / 256 ) * upTo);
