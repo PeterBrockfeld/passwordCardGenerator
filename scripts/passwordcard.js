@@ -1,6 +1,7 @@
 var theCard = "";
 var specialChars = "";
 var cornerText = "";
+var hasCrypto = false;
 
 window.onload = init;
 
@@ -30,6 +31,14 @@ $(function() {
   $( "#de, #en" ).click(function() {
     lang = $(this).attr("id");
     translateView();
+    });
+  $( "#noCryptoWarning" ).dialog({
+     modal: true,
+     buttons: {
+     Ok: function() {
+         $( this ).dialog( "close" );
+       }
+      }
     });    
   });
 
@@ -54,7 +63,8 @@ var langData = {
 	SPECIAL_CHARS: "Sonderzeichen:",
 	CORNER_TEXT: "Eckentext:",
 	GENERATE_CARD: "Karte erzeugen",
-	PRINT_CARD: "Karte drucken"
+	PRINT_CARD: "Karte drucken",
+	NO_CRYPTO_WARNING: "Ihr Browser unterstützt keine kryptografisch starken Zufallszahlen."
     },
     en: {
         PASSWORDCARD: "Passwordcard",
@@ -64,7 +74,8 @@ var langData = {
 	SPECIAL_CHARS: "Special chars:",
 	CORNER_TEXT: "Corner text:",
 	GENERATE_CARD: "Generate card",
-	PRINT_CARD: "Print card"	
+	PRINT_CARD: "Print card",
+    NO_CRYPTO_WARNING: "Your browser doesn't support cryptographically strong random numbers."	
     }
 };
  
@@ -123,8 +134,16 @@ function initializeSettings() {
   cornerText.value = "TST";
 }
 
+function checkCryptoSupport() {
+ hasCrypto = window.crypto ? true : false;
+ if (hasCrypto == true) {
+   $( "#noCryptoWarning" ).dialog( "open" );
+ }
+}
+
 function init() {
   
+  checkCryptoSupport();
   theCard = document.getElementById("theCard");
   initializeSettings();
   translateView();
@@ -146,7 +165,7 @@ function fillTheCard() {
   var countRows = rowsOfTheCard.length;
   
   for (var i = 0; i < countRows; i++) {
-    rowsOfTheCard[0].parentNode.removeChild(rowsOfTheCard[1]);
+    rowsOfTheCard[0].parentNode.removeChild(rowsOfTheCard[0]);
 
   }
  
@@ -294,12 +313,16 @@ function giveRandomPosition(upTo) {
     throw new BoundaryException(upTo, "random position generation");
   }
 
- var randomArray = new Uint8Array(1);
- //TODO replace by Math.Random for older browsers
- window.crypto.getRandomValues(randomArray);
+  if (hasCrypto) {
+    var randomArray = new Uint8Array(1);
+    //TODO replace by Math.Random for older browsers
+    window.crypto.getRandomValues(randomArray);
   
- return Math.floor((randomArray[0] / 256 ) * upTo);
-  
+    return Math.floor((randomArray[0] / 256 ) * upTo);
+  }
+  else {
+    return Math.floor(Math.random() * upTo);
+  }
 }
 
 function giveCharOfGivenType(givenType) {
