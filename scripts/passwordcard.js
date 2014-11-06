@@ -34,6 +34,7 @@ $(function() {
     });
   $( "#noCryptoWarning" ).dialog({
      modal: true,
+	 autoOpen: false,
      buttons: {
      Ok: function() {
          $( this ).dialog( "close" );
@@ -51,7 +52,7 @@ $(function() {
  */
 
 
-var lang="en"; // current language
+var lang="de"; // current language
 
 // translation data
 var langData = {
@@ -64,7 +65,9 @@ var langData = {
 	CORNER_TEXT: "Eckentext:",
 	GENERATE_CARD: "Karte erzeugen",
 	PRINT_CARD: "Karte drucken",
-	NO_CRYPTO_WARNING: "Ihr Browser unterstützt keine kryptografisch starken Zufallszahlen."
+	NO_CRYPTO_WARNING: "Ihr Browser unterstützt keine kryptografisch starken Zufallszahlen.",
+	EXPLANATIONS_TEXT: "Lorem ipsum ...",
+	EXPLANATION: "Erläuterung"
     },
     en: {
         PASSWORDCARD: "Passwordcard",
@@ -75,7 +78,9 @@ var langData = {
 	CORNER_TEXT: "Corner text:",
 	GENERATE_CARD: "Generate card",
 	PRINT_CARD: "Print card",
-    NO_CRYPTO_WARNING: "Your browser doesn't support cryptographically strong random numbers."	
+    NO_CRYPTO_WARNING: "Your browser doesn't support cryptographically strong random numbers.",
+	EXPLANATIONS_TEXT: "Lorem ipsum ...",
+	EXPLANATION: "Explanation"
     }
 };
  
@@ -136,7 +141,7 @@ function initializeSettings() {
 
 function checkCryptoSupport() {
  hasCrypto = window.crypto ? true : false;
- if (hasCrypto == true) {
+ if (hasCrypto == false) {
    $( "#noCryptoWarning" ).dialog( "open" );
  }
 }
